@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Text Expander Plus</title>
+<link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+<header>
+  <h1>⚡ Text Expander Plus</h1>
+  <label class="switch" title="Enable/disable auto-expansion on all pages">
+    <input type="checkbox" id="enabled" checked />
+    <span>Enabled</span>
+  </label>
+</header>
+
+<section class="card">
+  <h2>Auto text expander</h2>
+  <p class="hint">Type a shortcut + <kbd>Space</kbd>/<kbd>Tab</kbd>/<kbd>Enter</kbd> or punctuation anywhere to expand it. Example: <code>brb</code> → <code>be right back</code>.</p>
+  <form id="addForm">
+    <input id="trigger" placeholder="shortcut  (e.g. brb)" maxlength="50" autocomplete="off" required />
+    <input id="replacement" placeholder="expanded text" maxlength="500" autocomplete="off" required />
+    <button type="submit">Add</button>
+  </form>
+  <ul id="list"></ul>
+  <div class="row">
+    <button id="exportBtn" class="ghost">Export</button>
+    <label class="ghost file">Import<input type="file" id="importFile" accept="application/json" hidden /></label>
+  </div>
+</section>
+
+<section class="card">
+  <h2>Word tools</h2>
+  <p class="hint">Select text on any page, then right-click or use buttons below on the text you paste here.</p>
+  <textarea id="playground" rows="3" placeholder="Type or paste text here… e.g. abc"></textarea>
+  <div class="grid">
+    <button data-kind="reverse-chars" title="abc → cba">⇄ Reverse <code>abc→cba</code></button>
+    <button data-kind="reverse-word-order" title="hello world → world hello">⇄ Word order</button>
+    <button data-kind="scramble" title="Random shuffle of all characters">🎲 Scramble</button>
+    <button data-kind="scramble-words" title="Shuffle letters inside each word">🎲 Scramble words</button>
+    <button data-kind="upper">AA Upper</button>
+    <button data-kind="lower">aa lower</button>
+    <button data-kind="title">Aa Title</button>
+    <button id="copyBtn" class="ghost">Copy result</button>
+  </div>
+  <p class="hint">Shortcuts: <kbd>Alt+R</kbd> reverse selection · <kbd>Alt+S</kbd> scramble selection (customize at <code>chrome://extensions/shortcuts</code>).</p>
+  <div class="row">
+    <button id="applyPageBtn" class="ghost" title="Apply to the current page selection">Apply to page selection…</button>
+  </div>
+  <div id="pickRow" class="row" hidden>
+    <select id="pickKind">
+      <option value="reverse-chars">Reverse (abc→cba)</option>
+      <option value="reverse-word-order">Reverse word order</option>
+      <option value="scramble">Scramble</option>
+      <option value="scramble-words">Scramble words</option>
+      <option value="upper">UPPERCASE</option>
+      <option value="lower">lowercase</option>
+      <option value="title">Title Case</option>
+    </select>
+    <button id="pickGo">Apply</button>
+  </div>
+</section>
+
+<script src="popup.js"></script>
+</body>
+</html>

@@ -1,0 +1,37 @@
+:root { color-scheme: light dark; }
+* { box-sizing: border-box; }
+body { width: 360px; margin: 0; padding: 10px; font: 13px/1.4 system-ui, sans-serif; }
+header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+h1 { font-size: 15px; margin: 0; }
+h2 { font-size: 13px; margin: 0 0 6px; }
+.card { border: 1px solid #ccc; border-radius: 10px; padding: 10px; margin-bottom: 10px; }
+.hint { color: #666; font-size: 12px; margin: 0 0 8px; }
+kbd { background: #eee; border: 1px solid #ccc; border-radius: 4px; padding: 0 4px; font-size: 11px; }
+code { background: #eee; border-radius: 4px; padding: 0 4px; }
+#addForm { display: flex; gap: 6px; margin-bottom: 8px; }
+#addForm input { flex: 1; min-width: 0; padding: 6px; border: 1px solid #bbb; border-radius: 6px; }
+button { padding: 6px 10px; border: 1px solid #000000; border-radius: 6px; background: #0e0202; cursor: pointer; }
+button:hover { background: #090000; }
+button.ghost { background: transparent; }
+#list { list-style: none; margin: 0 0 8px; padding: 0; max-height: 160px; overflow: auto; }
+#list li { display: flex; align-items: center; gap: 6px; padding: 5px 6px; border: 1px solid #ddd; border-radius: 6px; margin-bottom: 4px; }
+#list .t { font-weight: 700; }
+#list .arrow { color: #888; }
+#list .r { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+#list .del { color: #c00; }
+.row { display: flex; gap: 6px; align-items: center; }
+.file { padding: 6px 10px; border: 1px solid #bbb; border-radius: 6px; cursor: pointer; }
+#playground { width: 100%; padding: 6px; border: 1px solid #bbb; border-radius: 6px; resize: vertical; margin-bottom: 8px; }
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 6px; }
+.grid button { font-size: 12px; }
+#pickRow { margin-top: 6px; }
+#pickRow select { flex: 1; padding: 6px; border-radius: 6px; }
+.switch { display: flex; gap: 6px; align-items: center; font-size: 12px; }
+@media (prefers-color-scheme: dark) {
+  body { background: #1e1e1e; color: #eee; }
+  h1, h2 { color: #eee; }
+  .card { border-color: #444; }
+  button, #addForm input, #playground, #pickRow select { background: #2a2a2a; color: #eee; border-color: #555; }
+  kbd, code { background: #333; border-color: #555; }
+  .hint { color: #aaa; }
+}
