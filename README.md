@@ -2,6 +2,7 @@
 
 
 ## Features
+- **Count words & letters**: right-click your selection → "Count words & letters in selection" shows a small toast with both counts — never modifies the text. Unicode-aware (`don't`, `well-known`, `2026` count correctly).
 - **Auto text expander**: define shortcuts like `brb` → `be right back`. Type shortcut + `Space`/`Tab`/`Enter`/punctuation in any input, textarea, Gmail, Docs, etc. to expand. Toggle on/off from popup.
 - **Reverse (abc → cba)**: reverse selected characters.
 - **Reverse word order**: `hello big world` → `world big big hello` (preserves spacing).
