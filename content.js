@@ -64,6 +64,31 @@
     }
   }
 
+  // Unicode-aware word counting (mirrors transforms.js)
+  const countWords = (s) => {
+    const m = s.match(/[\p{L}\p{N}]+(?:['’\-][\p{L}\p{N}]+)*/gu);
+    return m ? m.length : 0;
+  };
+
+  // Text to count: selection inside a focused input/textarea wins,
+  // otherwise the normal DOM/contenteditable selection.
+  function selectionTextForCounting() {
+    const active = document.activeElement;
+    if (active && (active.tagName === 'TEXTAREA' ||
+        (active.tagName === 'INPUT' && /^(text|search|url|tel|password|email)$/i.test(active.type || 'text')))) {
+      const s = active.selectionStart ?? 0;
+      const e = active.selectionEnd ?? 0;
+      if (s !== e) return active.value.slice(s, e);
+    }
+    return window.getSelection()?.toString() ?? '';
+  }
+
+  function countSelection() {
+    const text = selectionTextForCounting();
+    toast(`Words: ${countWords(text)} · Chars: ${text.length}`);
+    return { ok: true, words: countWords(text), chars: text.length };
+  }
+
   // ---------- selection replacement ----------
   function replaceSelectionInInput(el, newText) {
     const start = el.selectionStart ?? 0;
@@ -226,6 +251,11 @@
     if (msg.type === 'transform-selection') {
       const ok = transformSelection(msg.kind);
       sendResponse?.({ ok });
+      return true;
+    }
+    if (msg.type === 'count-selection') {
+      const result = countSelection();
+      sendResponse?.(result);
       return true;
     }
     if (msg.type === 'get-selection') {

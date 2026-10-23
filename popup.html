@@ -34,6 +34,7 @@
   <h2>Word tools</h2>
   <p class="hint">Select text on any page, then right-click or use buttons below on the text you paste here.</p>
   <textarea id="playground" rows="3" placeholder="Type or paste text here… e.g. abc"></textarea>
+  <p id="textStats" class="hint" aria-live="polite">0 words · 0 chars</p>
   <div class="grid">
     <button data-kind="reverse-chars" title="abc → cba">⇄ Reverse <code>abc→cba</code></button>
     <button data-kind="reverse-word-order" title="hello world → world hello">⇄ Word order</button>
@@ -57,6 +58,7 @@
       <option value="upper">UPPERCASE</option>
       <option value="lower">lowercase</option>
       <option value="title">Title Case</option>
+      <option value="count-words">Count words</option>
     </select>
     <button id="pickGo">Apply</button>
   </div>

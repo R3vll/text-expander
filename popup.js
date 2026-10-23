@@ -46,6 +46,15 @@ function reverseWordOrder(s) {
   }
   return out;
 }
+function toTitleCase(s) {
+  return s.toLowerCase().replace(/(?:^|[\s\-_])\p{L}/gu, (m) => m.toUpperCase());
+}
+function countWords(s) {
+  // Unicode-aware: counts runs of letters/digits as one word, so
+  // "don't", "well-known" and "2026" each count as a single word.
+  const m = s.match(/[\p{L}\p{N}]+(?:['’\-][\p{L}\p{N}]+)*/gu);
+  return m ? m.length : 0;
+}
 function applyTransform(kind, text) {
   switch (kind) {
     case 'reverse-chars': return reverseChars(text);
@@ -54,7 +63,7 @@ function applyTransform(kind, text) {
     case 'scramble-words': return scrambleWords(text);
     case 'upper': return text.toUpperCase();
     case 'lower': return text.toLowerCase();
-    case 'title': return text.toLowerCase().replace(/(?:^|[\s\-_])\p{L}/gu, (m) => m.toUpperCase());
+    case 'title': return toTitleCase(text);
     default: return text;
   }
 }
@@ -88,6 +97,7 @@ async function init() {
   snippets = Array.isArray(data.snippets) ? data.snippets : [];
   $('enabled').checked = data.enabled !== false;
   render();
+  updateStats();
 
   $('enabled').onchange = () => store.set({ enabled: $('enabled').checked });
 
@@ -106,6 +116,20 @@ async function init() {
     render();
   };
 
+  // live word/char count under the playground: counts the selected
+  // portion when a selection exists, otherwise the whole text
+  const playground = $('playground');
+  const statsEl = $('textStats');
+  function updateStats() {
+    const s = playground.selectionStart ?? 0;
+    const e = playground.selectionEnd ?? 0;
+    const target = s !== e ? playground.value.slice(s, e) : playground.value;
+    const suffix = s !== e ? ' (selection)' : '';
+    statsEl.textContent = `${countWords(target)} words · ${target.length} chars${suffix}`;
+  }
+  playground.addEventListener('input', updateStats);
+  playground.addEventListener('select', updateStats);
+
   // playground buttons: transform selected part or whole text
   document.querySelectorAll('[data-kind]').forEach((btn) => {
     btn.onclick = () => {
@@ -119,6 +143,7 @@ async function init() {
       } else {
         ta.value = applyTransform(kind, ta.value);
       }
+      updateStats();
       ta.focus();
     };
   });
@@ -163,7 +188,13 @@ async function init() {
     try {
       const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
       if (!tab?.id) return;
-      await chrome.tabs.sendMessage(tab.id, { type: 'transform-selection', kind: $('pickKind').value });
+      const kind = $('pickKind').value;
+      // counting is informational — never modifies the page
+      if (kind === 'count-words') {
+        await chrome.tabs.sendMessage(tab.id, { type: 'count-selection' });
+      } else {
+        await chrome.tabs.sendMessage(tab.id, { type: 'transform-selection', kind });
+      }
       window.close();
     } catch {
       alert('Could not reach the page. Reload the tab and try again (chrome:// pages are blocked).');
