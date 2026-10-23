@@ -67,7 +67,21 @@ function toTitle(s) {
   return s.toLowerCase().replace(/(?:^|[\s\-_])\p{L}/gu, (m) => m.toUpperCase());
 }
 
+function countWords(s) {
+  // Unicode-aware: counts runs of letters/digits as one word, so
+  // "don't", "well-known" and "2026" each count as a single word.
+  const m = s.match(/[\p{L}\p{N}]+(?:['’\-][\p{L}\p{N}]+)*/gu);
+  return m ? m.length : 0;
+}
+
+function countLetters(s) {
+  // Counts alphabetic characters only (\p{L}); digits, spaces,
+  // punctuation and symbols are excluded.
+  const m = s.match(/\p{L}/gu);
+  return m ? m.length : 0;
+}
+
 // Export for Node tests
 if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { reverseChars, reverseWordOrder, scrambleText, scrambleWords, toUpper, toLower, toTitle };
+  module.exports = { reverseChars, reverseWordOrder, scrambleText, scrambleWords, toUpper, toLower, toTitle, countWords, countLetters };
 }

@@ -21,6 +21,8 @@ chrome.runtime.onStartup.addListener(setupMenus);
 async function setupMenus() {
   try { await chrome.contextMenus.removeAll(); } catch { /* ignore */ }
   const items = [
+    { id: 'count-words', title: 'Count words & letters in selection' },
+    { id: 'sep0', type: 'separator' },
     { id: 'reverse-chars', title: 'Reverse characters (abc → cba)' },
     { id: 'reverse-word-order', title: 'Reverse word order' },
     { id: 'scramble', title: 'Scramble selection' },
@@ -43,11 +45,19 @@ async function setupMenus() {
 
 async function runTransform(tabId, kind) {
   try {
+    if (kind === 'count-words') {
+      await chrome.tabs.sendMessage(tabId, { type: 'count-selection' });
+      return;
+    }
     await chrome.tabs.sendMessage(tabId, { type: 'transform-selection', kind });
   } catch {
     // content script not injected (e.g. chrome:// pages) — try injecting then retry
     try {
       await chrome.scripting.executeScript({ target: { tabId }, files: ['content.js'] });
+      if (kind === 'count-words') {
+        await chrome.tabs.sendMessage(tabId, { type: 'count-selection' });
+        return;
+      }
       await chrome.tabs.sendMessage(tabId, { type: 'transform-selection', kind });
     } catch (e) {
       console.warn('transform failed', e);

@@ -132,6 +132,35 @@
   }
   const truncate = (s, n = 60) => (s.length > n ? s.slice(0, n) + '…' : s);
 
+  // ---------- selection counting (informational, never modifies the page) ----------
+  const countWords = (s) => {
+    const m = s.match(/[\p{L}\p{N}]+(?:['’\-][\p{L}\p{N}]+)*/gu);
+    return m ? m.length : 0;
+  };
+  const countLetters = (s) => {
+    const m = s.match(/\p{L}/gu);
+    return m ? m.length : 0;
+  };
+
+  // Selection to count: a selection inside a focused input/textarea wins,
+  // otherwise the normal DOM/contenteditable selection.
+  function selectionTextForCounting() {
+    const active = document.activeElement;
+    if (active && (active.tagName === 'TEXTAREA' ||
+        (active.tagName === 'INPUT' && /^(text|search|url|tel|password|email)$/i.test(active.type || 'text')))) {
+      const s = active.selectionStart ?? 0;
+      const e = active.selectionEnd ?? 0;
+      if (s !== e) return active.value.slice(s, e);
+    }
+    return window.getSelection()?.toString() ?? '';
+  }
+
+  function countSelection() {
+    const text = selectionTextForCounting();
+    toast(`Words: ${countWords(text)} · Letters: ${countLetters(text)}`);
+    return { ok: true, words: countWords(text), letters: countLetters(text) };
+  }
+
   let toastEl = null;
   function toast(msg) {
     if (toastEl) toastEl.remove();
@@ -226,6 +255,10 @@
     if (msg.type === 'transform-selection') {
       const ok = transformSelection(msg.kind);
       sendResponse?.({ ok });
+      return true;
+    }
+    if (msg.type === 'count-selection') {
+      sendResponse?.(countSelection());
       return true;
     }
     if (msg.type === 'get-selection') {
