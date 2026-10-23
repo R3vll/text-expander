@@ -137,7 +137,7 @@
     if (toastEl) toastEl.remove();
     toastEl = document.createElement('div');
     toastEl.textContent = msg;
-    toastEl.style.cssText = 'position:fixed;bottom:16px;right:16px;z-index:2147483647;background:#111;color:#fff;padding:8px 12px;border-radius:8px;font:13px system-ui;opacity:.95';
+    toastEl.style.cssText = 'position:fixed;bottom:16px;right:16px;z-index:2147483647;background:#ffffff;color:#0d0d0d;border:1px solid #e5e5e5;box-shadow:0 4px 12px rgba(0,0,0,.15);padding:8px 12px;border-radius:8px;font:13px system-ui;opacity:.97';
     document.documentElement.appendChild(toastEl);
     setTimeout(() => toastEl?.remove(), 2500);
   }
